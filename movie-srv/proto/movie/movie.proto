@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package go.micro.srv.movie;
+
+service Movie {
+	rpc AddMovie(AddRequest) returns (AddResponse) {}
+}
+
+message AddRequest {
+	string title = 1;
+	string url = 2;
+	string status = 3;
+}
+
+message AddResponse {
+	string msg = 1;
+}

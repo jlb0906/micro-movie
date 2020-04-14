@@ -1,0 +1,86 @@
+syntax = "proto3";
+
+package go.micro.srv.aria2;
+
+service Aria2 {
+  rpc AddURI(AddURIReq) returns (AddURIRsp) {}
+  rpc Remove(RemoveReq) returns (RemoveRsp) {}
+  rpc Pause(PauseReq) returns (PauseRsp) {}
+  rpc TellStatus(TellStatusReq) returns (TellStatusRsp) {}
+}
+
+message Error {
+  int32 code = 1;
+  string detail = 2;
+}
+
+message AddURIReq {
+  string uri = 1;
+}
+
+message AddURIRsp {
+  string gid = 1;
+  Error err = 2;
+}
+
+message RemoveReq {
+  string gid = 1;
+}
+
+message RemoveRsp {
+  string gid = 1;
+  Error err = 2;
+}
+
+message PauseReq {
+  string gid = 1;
+}
+
+message PauseRsp {
+  string gid = 1;
+  Error err = 2;
+}
+
+message TellStatusReq {
+  string gid = 1;
+  repeated string keys = 2;
+}
+
+message TellStatusRsp {
+  StatusInfo info = 1;
+  Error err = 2;
+}
+
+message StatusInfo {
+  string Gid = 1;
+  string Status = 2;
+  string TotalLength = 3;
+  string CompletedLength = 4;
+  string UploadLength = 5;
+  string BitField = 6;
+  string DownloadSpeed = 7;
+  string UploadSpeed = 8;
+  string InfoHash = 9;
+  string NumSeeders = 10;
+  string Connections = 11;
+  string ErrorCode = 12;
+  string ErrorMessage = 13;
+  repeated string FollowedBy = 14;
+  string BelongsTo = 15;
+  string Dir = 16;
+  repeated FileInfo Files = 17;
+}
+
+message FileInfo {
+  string Index = 1;
+  string Path = 2;
+  string Length = 3;
+  string CompletedLength = 4;
+  string Selected = 5;
+  repeated URIInfo URIs = 6;
+}
+
+message URIInfo  {
+  string URI = 1;
+  string Status = 2;
+}

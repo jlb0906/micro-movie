@@ -1,0 +1,35 @@
+micro:
+  etcd:
+    enabled: true
+    host: 192.168.1.105
+    port: 2379
+  db:
+    mysql:
+      enabled: true
+      url: root:1234@(192.168.1.105:3306)/micro_movie?charset=utf8&parseTime=true&loc=Asia%2FShanghai
+  redis:
+    enabled: true
+    conn: 192.168.1.105:6379
+    dbNum: 8
+    password:
+    timeout: 3000
+    sentinel:
+      enabled: false
+      master: bookMaster
+      nodes: 192.168.1.105:16379,192.168.1.105:26379,192.168.1.105:36379
+
+  aria2_srv:
+    name: go.micro.srv.aria2
+    version: latest
+    aria2:
+      uri: http://192.168.1.105:6800/jsonrpc
+      token: "123456"
+      timeout: 1
+
+  aria2_web:
+    name: go.micro.web.aria2
+    version: latest
+
+  movie_srv:
+    name: go.micro.srv.movie
+    version: latest
