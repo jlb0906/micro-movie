@@ -24,13 +24,13 @@ func Init() {
 type Movie struct{}
 
 func (e *Movie) UpdateMovie(ctx context.Context, req *proto.UpdateReq, rsp *proto.UpdateRsp) error {
-	movieService.UpdateMovie(req.Movie.Title, req.Movie.Url, req.Movie.Status)
+	movieService.UpdateMovie(req.Movie)
 	rsp.Msg = "succeed"
 	return nil
 }
 
 func (e *Movie) AddMovie(ctx context.Context, req *proto.AddReq, resp *proto.AddRsp) error {
-	_, err := movieService.AddMovie(req.Movie.Title, req.Movie.Url, req.Movie.Status)
+	_, err := movieService.AddMovie(req.Movie)
 	if err != nil {
 		log.Error(err)
 		resp.Msg = "failed"

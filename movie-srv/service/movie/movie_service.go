@@ -2,9 +2,9 @@ package movie
 
 import (
 	"fmt"
-	"github.com/google/uuid"
 	"github.com/jinzhu/gorm"
 	"github.com/jlb0906/micro-movie/movie-srv/model"
+	proto "github.com/jlb0906/micro-movie/movie-srv/proto/movie"
 	db2 "github.com/jlb0906/micro-movie/plugins/db"
 	"sync"
 )
@@ -16,8 +16,8 @@ var (
 )
 
 type Service interface {
-	AddMovie(title, url, status string) (mid string, err error)
-	UpdateMovie(title, url, status string)
+	AddMovie(m *proto.Movie) (mid string, err error)
+	UpdateMovie(m *proto.Movie)
 }
 
 // GetService 获取服务类
@@ -48,16 +48,16 @@ func Init() {
 type service struct {
 }
 
-func (s *service) UpdateMovie(title, url, status string) {
-	db.Model(&model.Movie{}).Updates(map[string]interface{}{"title": title, "url": url, "status": status})
+func (s *service) UpdateMovie(m *proto.Movie) {
+	db.Model(&model.Movie{Id: m.Id}).Updates(map[string]interface{}{"title": m.Title, "url": m.Url, "status": m.Status})
 }
 
-func (s *service) AddMovie(title, url, status string) (mid string, err error) {
+func (s *service) AddMovie(m *proto.Movie) (mid string, err error) {
 	movie := model.Movie{
-		Id:     uuid.New().String(),
-		Title:  title,
-		Url:    url,
-		Status: status,
+		Id:     m.Id,
+		Title:  m.Title,
+		Url:    m.Url,
+		Status: m.Status,
 	}
 	db.Create(&movie)
 	b := db.NewRecord(movie)

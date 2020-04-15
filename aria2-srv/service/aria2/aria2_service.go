@@ -39,6 +39,7 @@ func (MovieNotifier) OnDownloadStart(events []rpc.Event) {
 		arr := strings.Split(stat.Files[0].URIs[0].URI, "/")
 		movieCli.AddMovie(context.TODO(), &proto.AddReq{
 			Movie: &proto.Movie{
+				Id:     e.Gid,
 				Title:  arr[len(arr)-1],
 				Url:    stat.Files[0].URIs[0].URI,
 				Status: stat.Status,
@@ -83,13 +84,14 @@ func (MovieNotifier) OnDownloadComplete(events []rpc.Event) {
 
 		movieCli.UpdateMovie(context.TODO(), &proto.UpdateReq{
 			Movie: &proto.Movie{
+				Id:     e.Gid,
 				Title:  objectName,
 				Url:    u.String(),
 				Status: stat.Status,
 			},
 		})
 
-		logger.Infof("Successfully uploaded %s of size %d\n", objectName, n)
+		logger.Infof("Successfully uploaded %s of size %d", objectName, n)
 	}
 }
 func (MovieNotifier) OnDownloadError(events []rpc.Event) { logger.Infof("%s error.", events) }

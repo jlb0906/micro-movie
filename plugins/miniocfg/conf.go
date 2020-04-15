@@ -58,12 +58,12 @@ func initMinio() {
 		// Check to see if we already own this bucket (which happens if you run this twice)
 		exists, errBucketExists := minioClient.BucketExists(cfg.BucketName)
 		if errBucketExists == nil && exists {
-			log.Info("We already own %s\n", cfg.BucketName)
+			log.Info("We already own %s", cfg.BucketName)
 		} else {
 			log.Error(err)
 		}
 	} else {
-		log.Infof("Successfully created %s\n", cfg.BucketName)
+		log.Infof("Successfully created %s", cfg.BucketName)
 	}
 
 	cli = minioClient
