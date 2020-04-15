@@ -36,6 +36,7 @@ var _ server.Option
 type MovieSrvService interface {
 	AddMovie(ctx context.Context, in *AddReq, opts ...client.CallOption) (*AddRsp, error)
 	UpdateMovie(ctx context.Context, in *UpdateReq, opts ...client.CallOption) (*UpdateRsp, error)
+	SelectAll(ctx context.Context, in *Empty, opts ...client.CallOption) (*SelectRsp, error)
 }
 
 type movieSrvService struct {
@@ -70,17 +71,29 @@ func (c *movieSrvService) UpdateMovie(ctx context.Context, in *UpdateReq, opts .
 	return out, nil
 }
 
+func (c *movieSrvService) SelectAll(ctx context.Context, in *Empty, opts ...client.CallOption) (*SelectRsp, error) {
+	req := c.c.NewRequest(c.name, "MovieSrv.SelectAll", in)
+	out := new(SelectRsp)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for MovieSrv service
 
 type MovieSrvHandler interface {
 	AddMovie(context.Context, *AddReq, *AddRsp) error
 	UpdateMovie(context.Context, *UpdateReq, *UpdateRsp) error
+	SelectAll(context.Context, *Empty, *SelectRsp) error
 }
 
 func RegisterMovieSrvHandler(s server.Server, hdlr MovieSrvHandler, opts ...server.HandlerOption) error {
 	type movieSrv interface {
 		AddMovie(ctx context.Context, in *AddReq, out *AddRsp) error
 		UpdateMovie(ctx context.Context, in *UpdateReq, out *UpdateRsp) error
+		SelectAll(ctx context.Context, in *Empty, out *SelectRsp) error
 	}
 	type MovieSrv struct {
 		movieSrv
@@ -99,4 +112,8 @@ func (h *movieSrvHandler) AddMovie(ctx context.Context, in *AddReq, out *AddRsp)
 
 func (h *movieSrvHandler) UpdateMovie(ctx context.Context, in *UpdateReq, out *UpdateRsp) error {
 	return h.MovieSrvHandler.UpdateMovie(ctx, in, out)
+}
+
+func (h *movieSrvHandler) SelectAll(ctx context.Context, in *Empty, out *SelectRsp) error {
+	return h.MovieSrvHandler.SelectAll(ctx, in, out)
 }

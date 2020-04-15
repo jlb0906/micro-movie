@@ -18,6 +18,7 @@ var (
 type Service interface {
 	AddMovie(m *proto.Movie) (mid string, err error)
 	UpdateMovie(m *proto.Movie)
+	SelectAll() []*proto.Movie
 }
 
 // GetService 获取服务类
@@ -46,6 +47,12 @@ func Init() {
 
 // service 服务
 type service struct {
+}
+
+func (s *service) SelectAll() []*proto.Movie {
+	var movies []*proto.Movie
+	db.Find(&movies)
+	return movies
 }
 
 func (s *service) UpdateMovie(m *proto.Movie) {

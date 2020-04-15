@@ -23,6 +23,11 @@ func Init() {
 
 type Movie struct{}
 
+func (e *Movie) SelectAll(ctx context.Context, _ *proto.Empty, rsp *proto.SelectRsp) error {
+	rsp.Movies = movieService.SelectAll()
+	return nil
+}
+
 func (e *Movie) UpdateMovie(ctx context.Context, req *proto.UpdateReq, rsp *proto.UpdateRsp) error {
 	movieService.UpdateMovie(req.Movie)
 	rsp.Msg = "succeed"

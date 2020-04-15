@@ -63,9 +63,9 @@ func (MovieNotifier) OnDownloadComplete(events []rpc.Event) {
 		}
 
 		// Upload the file
-		arr := strings.Split(stat.Files[0].URIs[0].URI, "/")
-		objectName := arr[len(arr)-1]
 		filePath := stat.Files[0].Path
+		arr := strings.Split(filePath, "/")
+		objectName := arr[len(arr)-1]
 		filePath = filepath.Join(aria2cfg.GetAria2().Prefix, filePath)
 
 		// Upload the file with FPutObject
