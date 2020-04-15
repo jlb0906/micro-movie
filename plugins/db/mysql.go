@@ -36,6 +36,9 @@ func initMysql() {
 
 	// 创建连接
 	mysqlDB, err = gorm.Open("mysql", cfg.Mysql.URL)
+	if mysqlDB != nil {
+		mysqlDB.SingularTable(true)
+	}
 
 	if err != nil {
 		logger.Fatal(err)

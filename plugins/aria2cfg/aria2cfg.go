@@ -18,9 +18,10 @@ type Aria2 struct {
 	Uri     string `json:"uri"`
 	Token   string `json:"token"`
 	Timeout int    `json:"timeout"`
+	Prefix  string `json:"prefix"`
 }
 
-// init 初始化Redis
+// init 初始化
 func init() {
 	basic.Register(initAria2)
 }
@@ -43,10 +44,7 @@ func initAria2() {
 		logger.Error("[initAria2] %s", err)
 	}
 
-	if err != nil {
-		logger.Error(err)
-	}
-
+	inited = true
 	logger.Infof("[initAria2] Arias，成功")
 }
 

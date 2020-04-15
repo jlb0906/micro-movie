@@ -17,6 +17,13 @@ micro:
       enabled: false
       master: bookMaster
       nodes: 192.168.1.105:16379,192.168.1.105:26379,192.168.1.105:36379
+  minio:
+    endpoint: 192.168.1.105:8000
+    accessKeyID: minio
+    secretAccessKey: minio123
+    useSSL: false
+    bucketName: micro-movie
+    location: cn-north-1
 
   aria2_srv:
     name: go.micro.srv.aria2
@@ -25,6 +32,7 @@ micro:
       uri: http://192.168.1.105:6800/jsonrpc
       token: "123456"
       timeout: 1
+      prefix: /root
 
   aria2_web:
     name: go.micro.web.aria2

@@ -31,27 +31,28 @@ var _ context.Context
 var _ client.Option
 var _ server.Option
 
-// Client API for Movie service
+// Client API for MovieSrv service
 
-type MovieService interface {
-	AddMovie(ctx context.Context, in *AddRequest, opts ...client.CallOption) (*AddResponse, error)
+type MovieSrvService interface {
+	AddMovie(ctx context.Context, in *AddReq, opts ...client.CallOption) (*AddRsp, error)
+	UpdateMovie(ctx context.Context, in *UpdateReq, opts ...client.CallOption) (*UpdateRsp, error)
 }
 
-type movieService struct {
+type movieSrvService struct {
 	c    client.Client
 	name string
 }
 
-func NewMovieService(name string, c client.Client) MovieService {
-	return &movieService{
+func NewMovieSrvService(name string, c client.Client) MovieSrvService {
+	return &movieSrvService{
 		c:    c,
 		name: name,
 	}
 }
 
-func (c *movieService) AddMovie(ctx context.Context, in *AddRequest, opts ...client.CallOption) (*AddResponse, error) {
-	req := c.c.NewRequest(c.name, "Movie.AddMovie", in)
-	out := new(AddResponse)
+func (c *movieSrvService) AddMovie(ctx context.Context, in *AddReq, opts ...client.CallOption) (*AddRsp, error) {
+	req := c.c.NewRequest(c.name, "MovieSrv.AddMovie", in)
+	out := new(AddRsp)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -59,27 +60,43 @@ func (c *movieService) AddMovie(ctx context.Context, in *AddRequest, opts ...cli
 	return out, nil
 }
 
-// Server API for Movie service
-
-type MovieHandler interface {
-	AddMovie(context.Context, *AddRequest, *AddResponse) error
-}
-
-func RegisterMovieHandler(s server.Server, hdlr MovieHandler, opts ...server.HandlerOption) error {
-	type movie interface {
-		AddMovie(ctx context.Context, in *AddRequest, out *AddResponse) error
+func (c *movieSrvService) UpdateMovie(ctx context.Context, in *UpdateReq, opts ...client.CallOption) (*UpdateRsp, error) {
+	req := c.c.NewRequest(c.name, "MovieSrv.UpdateMovie", in)
+	out := new(UpdateRsp)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
 	}
-	type Movie struct {
-		movie
+	return out, nil
+}
+
+// Server API for MovieSrv service
+
+type MovieSrvHandler interface {
+	AddMovie(context.Context, *AddReq, *AddRsp) error
+	UpdateMovie(context.Context, *UpdateReq, *UpdateRsp) error
+}
+
+func RegisterMovieSrvHandler(s server.Server, hdlr MovieSrvHandler, opts ...server.HandlerOption) error {
+	type movieSrv interface {
+		AddMovie(ctx context.Context, in *AddReq, out *AddRsp) error
+		UpdateMovie(ctx context.Context, in *UpdateReq, out *UpdateRsp) error
 	}
-	h := &movieHandler{hdlr}
-	return s.Handle(s.NewHandler(&Movie{h}, opts...))
+	type MovieSrv struct {
+		movieSrv
+	}
+	h := &movieSrvHandler{hdlr}
+	return s.Handle(s.NewHandler(&MovieSrv{h}, opts...))
 }
 
-type movieHandler struct {
-	MovieHandler
+type movieSrvHandler struct {
+	MovieSrvHandler
 }
 
-func (h *movieHandler) AddMovie(ctx context.Context, in *AddRequest, out *AddResponse) error {
-	return h.MovieHandler.AddMovie(ctx, in, out)
+func (h *movieSrvHandler) AddMovie(ctx context.Context, in *AddReq, out *AddRsp) error {
+	return h.MovieSrvHandler.AddMovie(ctx, in, out)
+}
+
+func (h *movieSrvHandler) UpdateMovie(ctx context.Context, in *UpdateReq, out *UpdateRsp) error {
+	return h.MovieSrvHandler.UpdateMovie(ctx, in, out)
 }

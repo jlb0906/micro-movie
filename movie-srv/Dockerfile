@@ -1,3 +1,3 @@
 FROM alpine
-ADD movie-service /movie-service
-ENTRYPOINT [ "/movie-service" ]
+ADD movie-srv /movie-srv
+ENTRYPOINT [ "/movie-srv" ]

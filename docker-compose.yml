@@ -1,0 +1,20 @@
+version: '3.1'
+
+services:
+
+  config-grpc-srv:
+    build: ./config-grpc-srv
+    network_mode: "bridge"
+    container_name: config-grpc-srv
+
+  aria2-srv:
+    build: ./aria2-srv
+    volumes:
+    - /root/downloads:/downloads
+    network_mode: "bridge"
+    container_name: aria2-srv
+
+  movie-srv:
+    build: ./movie-srv
+    network_mode: "bridge"
+    container_name: movie-srv

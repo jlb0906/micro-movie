@@ -54,7 +54,7 @@ func main() {
 	)
 
 	// Register Handler
-	proto.RegisterMovieHandler(srv.Server(), new(handler.Movie))
+	proto.RegisterMovieSrvHandler(srv.Server(), new(handler.Movie))
 
 	// Run service
 	if err := srv.Run(); err != nil {

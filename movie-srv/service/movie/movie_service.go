@@ -17,6 +17,7 @@ var (
 
 type Service interface {
 	AddMovie(title, url, status string) (mid string, err error)
+	UpdateMovie(title, url, status string)
 }
 
 // GetService 获取服务类
@@ -45,6 +46,10 @@ func Init() {
 
 // service 服务
 type service struct {
+}
+
+func (s *service) UpdateMovie(title, url, status string) {
+	db.Model(&model.Movie{}).Updates(map[string]interface{}{"title": title, "url": url, "status": status})
 }
 
 func (s *service) AddMovie(title, url, status string) (mid string, err error) {

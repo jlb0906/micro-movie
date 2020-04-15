@@ -20,103 +20,231 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
-type AddRequest struct {
-	Title                string   `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"`
-	Url                  string   `protobuf:"bytes,2,opt,name=url,proto3" json:"url,omitempty"`
-	Status               string   `protobuf:"bytes,3,opt,name=status,proto3" json:"status,omitempty"`
+type AddReq struct {
+	Movie                *Movie   `protobuf:"bytes,1,opt,name=movie,proto3" json:"movie,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *AddRequest) Reset()         { *m = AddRequest{} }
-func (m *AddRequest) String() string { return proto.CompactTextString(m) }
-func (*AddRequest) ProtoMessage()    {}
-func (*AddRequest) Descriptor() ([]byte, []int) {
+func (m *AddReq) Reset()         { *m = AddReq{} }
+func (m *AddReq) String() string { return proto.CompactTextString(m) }
+func (*AddReq) ProtoMessage()    {}
+func (*AddReq) Descriptor() ([]byte, []int) {
 	return fileDescriptor_aaf815cb0f542f66, []int{0}
 }
 
-func (m *AddRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_AddRequest.Unmarshal(m, b)
+func (m *AddReq) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AddReq.Unmarshal(m, b)
 }
-func (m *AddRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_AddRequest.Marshal(b, m, deterministic)
+func (m *AddReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AddReq.Marshal(b, m, deterministic)
 }
-func (m *AddRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AddRequest.Merge(m, src)
+func (m *AddReq) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AddReq.Merge(m, src)
 }
-func (m *AddRequest) XXX_Size() int {
-	return xxx_messageInfo_AddRequest.Size(m)
+func (m *AddReq) XXX_Size() int {
+	return xxx_messageInfo_AddReq.Size(m)
 }
-func (m *AddRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_AddRequest.DiscardUnknown(m)
+func (m *AddReq) XXX_DiscardUnknown() {
+	xxx_messageInfo_AddReq.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_AddRequest proto.InternalMessageInfo
+var xxx_messageInfo_AddReq proto.InternalMessageInfo
 
-func (m *AddRequest) GetTitle() string {
+func (m *AddReq) GetMovie() *Movie {
 	if m != nil {
-		return m.Title
+		return m.Movie
 	}
-	return ""
+	return nil
 }
 
-func (m *AddRequest) GetUrl() string {
-	if m != nil {
-		return m.Url
-	}
-	return ""
-}
-
-func (m *AddRequest) GetStatus() string {
-	if m != nil {
-		return m.Status
-	}
-	return ""
-}
-
-type AddResponse struct {
+type AddRsp struct {
 	Msg                  string   `protobuf:"bytes,1,opt,name=msg,proto3" json:"msg,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *AddResponse) Reset()         { *m = AddResponse{} }
-func (m *AddResponse) String() string { return proto.CompactTextString(m) }
-func (*AddResponse) ProtoMessage()    {}
-func (*AddResponse) Descriptor() ([]byte, []int) {
+func (m *AddRsp) Reset()         { *m = AddRsp{} }
+func (m *AddRsp) String() string { return proto.CompactTextString(m) }
+func (*AddRsp) ProtoMessage()    {}
+func (*AddRsp) Descriptor() ([]byte, []int) {
 	return fileDescriptor_aaf815cb0f542f66, []int{1}
 }
 
-func (m *AddResponse) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_AddResponse.Unmarshal(m, b)
+func (m *AddRsp) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AddRsp.Unmarshal(m, b)
 }
-func (m *AddResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_AddResponse.Marshal(b, m, deterministic)
+func (m *AddRsp) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AddRsp.Marshal(b, m, deterministic)
 }
-func (m *AddResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AddResponse.Merge(m, src)
+func (m *AddRsp) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AddRsp.Merge(m, src)
 }
-func (m *AddResponse) XXX_Size() int {
-	return xxx_messageInfo_AddResponse.Size(m)
+func (m *AddRsp) XXX_Size() int {
+	return xxx_messageInfo_AddRsp.Size(m)
 }
-func (m *AddResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_AddResponse.DiscardUnknown(m)
+func (m *AddRsp) XXX_DiscardUnknown() {
+	xxx_messageInfo_AddRsp.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_AddResponse proto.InternalMessageInfo
+var xxx_messageInfo_AddRsp proto.InternalMessageInfo
 
-func (m *AddResponse) GetMsg() string {
+func (m *AddRsp) GetMsg() string {
 	if m != nil {
 		return m.Msg
 	}
 	return ""
 }
 
+type UpdateReq struct {
+	Movie                *Movie   `protobuf:"bytes,1,opt,name=movie,proto3" json:"movie,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *UpdateReq) Reset()         { *m = UpdateReq{} }
+func (m *UpdateReq) String() string { return proto.CompactTextString(m) }
+func (*UpdateReq) ProtoMessage()    {}
+func (*UpdateReq) Descriptor() ([]byte, []int) {
+	return fileDescriptor_aaf815cb0f542f66, []int{2}
+}
+
+func (m *UpdateReq) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_UpdateReq.Unmarshal(m, b)
+}
+func (m *UpdateReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_UpdateReq.Marshal(b, m, deterministic)
+}
+func (m *UpdateReq) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_UpdateReq.Merge(m, src)
+}
+func (m *UpdateReq) XXX_Size() int {
+	return xxx_messageInfo_UpdateReq.Size(m)
+}
+func (m *UpdateReq) XXX_DiscardUnknown() {
+	xxx_messageInfo_UpdateReq.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_UpdateReq proto.InternalMessageInfo
+
+func (m *UpdateReq) GetMovie() *Movie {
+	if m != nil {
+		return m.Movie
+	}
+	return nil
+}
+
+type UpdateRsp struct {
+	Msg                  string   `protobuf:"bytes,1,opt,name=msg,proto3" json:"msg,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *UpdateRsp) Reset()         { *m = UpdateRsp{} }
+func (m *UpdateRsp) String() string { return proto.CompactTextString(m) }
+func (*UpdateRsp) ProtoMessage()    {}
+func (*UpdateRsp) Descriptor() ([]byte, []int) {
+	return fileDescriptor_aaf815cb0f542f66, []int{3}
+}
+
+func (m *UpdateRsp) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_UpdateRsp.Unmarshal(m, b)
+}
+func (m *UpdateRsp) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_UpdateRsp.Marshal(b, m, deterministic)
+}
+func (m *UpdateRsp) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_UpdateRsp.Merge(m, src)
+}
+func (m *UpdateRsp) XXX_Size() int {
+	return xxx_messageInfo_UpdateRsp.Size(m)
+}
+func (m *UpdateRsp) XXX_DiscardUnknown() {
+	xxx_messageInfo_UpdateRsp.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_UpdateRsp proto.InternalMessageInfo
+
+func (m *UpdateRsp) GetMsg() string {
+	if m != nil {
+		return m.Msg
+	}
+	return ""
+}
+
+type Movie struct {
+	Id                   string   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Title                string   `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
+	Url                  string   `protobuf:"bytes,3,opt,name=url,proto3" json:"url,omitempty"`
+	Status               string   `protobuf:"bytes,4,opt,name=status,proto3" json:"status,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *Movie) Reset()         { *m = Movie{} }
+func (m *Movie) String() string { return proto.CompactTextString(m) }
+func (*Movie) ProtoMessage()    {}
+func (*Movie) Descriptor() ([]byte, []int) {
+	return fileDescriptor_aaf815cb0f542f66, []int{4}
+}
+
+func (m *Movie) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Movie.Unmarshal(m, b)
+}
+func (m *Movie) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Movie.Marshal(b, m, deterministic)
+}
+func (m *Movie) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Movie.Merge(m, src)
+}
+func (m *Movie) XXX_Size() int {
+	return xxx_messageInfo_Movie.Size(m)
+}
+func (m *Movie) XXX_DiscardUnknown() {
+	xxx_messageInfo_Movie.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Movie proto.InternalMessageInfo
+
+func (m *Movie) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
+
+func (m *Movie) GetTitle() string {
+	if m != nil {
+		return m.Title
+	}
+	return ""
+}
+
+func (m *Movie) GetUrl() string {
+	if m != nil {
+		return m.Url
+	}
+	return ""
+}
+
+func (m *Movie) GetStatus() string {
+	if m != nil {
+		return m.Status
+	}
+	return ""
+}
+
 func init() {
-	proto.RegisterType((*AddRequest)(nil), "go.micro.srv.movie.AddRequest")
-	proto.RegisterType((*AddResponse)(nil), "go.micro.srv.movie.AddResponse")
+	proto.RegisterType((*AddReq)(nil), "go.micro.srv.movie.AddReq")
+	proto.RegisterType((*AddRsp)(nil), "go.micro.srv.movie.AddRsp")
+	proto.RegisterType((*UpdateReq)(nil), "go.micro.srv.movie.UpdateReq")
+	proto.RegisterType((*UpdateRsp)(nil), "go.micro.srv.movie.UpdateRsp")
+	proto.RegisterType((*Movie)(nil), "go.micro.srv.movie.Movie")
 }
 
 func init() {
@@ -124,17 +252,21 @@ func init() {
 }
 
 var fileDescriptor_aaf815cb0f542f66 = []byte{
-	// 182 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x52, 0xcc, 0xcd, 0x2f, 0xcb,
-	0x4c, 0xd5, 0x2d, 0x2e, 0x2a, 0xd3, 0x2f, 0x28, 0xca, 0x2f, 0xc9, 0xd7, 0x07, 0xf3, 0x21, 0xa4,
-	0x1e, 0x58, 0x44, 0x48, 0x28, 0x3d, 0x5f, 0x2f, 0x37, 0x33, 0xb9, 0x28, 0x5f, 0xaf, 0xb8, 0xa8,
-	0x4c, 0x0f, 0x2c, 0xa3, 0xe4, 0xc3, 0xc5, 0xe5, 0x98, 0x92, 0x12, 0x94, 0x5a, 0x58, 0x9a, 0x5a,
-	0x5c, 0x22, 0x24, 0xc2, 0xc5, 0x5a, 0x92, 0x59, 0x92, 0x93, 0x2a, 0xc1, 0xa8, 0xc0, 0xa8, 0xc1,
-	0x19, 0x04, 0xe1, 0x08, 0x09, 0x70, 0x31, 0x97, 0x16, 0xe5, 0x48, 0x30, 0x81, 0xc5, 0x40, 0x4c,
-	0x21, 0x31, 0x2e, 0xb6, 0xe2, 0x92, 0xc4, 0x92, 0xd2, 0x62, 0x09, 0x66, 0xb0, 0x20, 0x94, 0xa7,
-	0x24, 0xcf, 0xc5, 0x0d, 0x36, 0xad, 0xb8, 0x20, 0x3f, 0xaf, 0x18, 0xac, 0x31, 0xb7, 0x38, 0x1d,
-	0x6a, 0x18, 0x88, 0x69, 0x14, 0xc6, 0xc5, 0xea, 0x0b, 0xb2, 0x57, 0xc8, 0x97, 0x8b, 0xc3, 0x31,
-	0x25, 0x05, 0xc2, 0x96, 0xd3, 0xc3, 0x74, 0x98, 0x1e, 0xc2, 0x55, 0x52, 0xf2, 0x38, 0xe5, 0x21,
-	0xf6, 0x28, 0x31, 0x24, 0xb1, 0x81, 0x7d, 0x68, 0x0c, 0x08, 0x00, 0x00, 0xff, 0xff, 0xf8, 0xa4,
-	0xa9, 0xbe, 0x06, 0x01, 0x00, 0x00,
+	// 250 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x91, 0x41, 0x4b, 0xc4, 0x30,
+	0x10, 0x85, 0x6d, 0xd7, 0x96, 0xdd, 0x59, 0x10, 0x19, 0x44, 0x6a, 0x61, 0x41, 0x7b, 0xf2, 0x62,
+	0x0a, 0xeb, 0x49, 0xf0, 0xb2, 0xe0, 0x75, 0x2f, 0x15, 0xf1, 0xbc, 0x9a, 0xb0, 0x04, 0x5a, 0x12,
+	0x93, 0x34, 0x7f, 0xc7, 0xbf, 0x2a, 0x99, 0x59, 0xf6, 0x62, 0xf5, 0xb0, 0x97, 0xa1, 0xf3, 0xde,
+	0x9b, 0xaf, 0xc9, 0x04, 0xee, 0x06, 0x13, 0xb5, 0x7a, 0xf0, 0x2e, 0xb6, 0xd6, 0x99, 0x60, 0x5a,
+	0xea, 0xb9, 0x0a, 0x52, 0x10, 0xf7, 0x46, 0x0c, 0xfa, 0xd3, 0x19, 0xe1, 0x5d, 0x14, 0xe4, 0x34,
+	0x4f, 0x50, 0x6e, 0xa4, 0xec, 0xd4, 0x17, 0xb6, 0x50, 0x90, 0x54, 0x65, 0xb7, 0xd9, 0xfd, 0x72,
+	0x7d, 0x23, 0x7e, 0xa7, 0xc5, 0x36, 0xd5, 0x8e, 0x73, 0x4d, 0xcd, 0xa3, 0xde, 0xe2, 0x25, 0xcc,
+	0x06, 0xbf, 0xa7, 0xc1, 0x45, 0x97, 0x3e, 0x9b, 0x67, 0x58, 0xbc, 0x59, 0xb9, 0x0b, 0xea, 0x24,
+	0xf2, 0xea, 0x38, 0x3d, 0x09, 0x7f, 0x87, 0x82, 0xe2, 0x78, 0x01, 0xb9, 0x96, 0x07, 0x27, 0xd7,
+	0x12, 0xaf, 0xa0, 0x08, 0x3a, 0xf4, 0xaa, 0xca, 0x49, 0xe2, 0x26, 0x01, 0x46, 0xd7, 0x57, 0x33,
+	0x06, 0x8c, 0xae, 0xc7, 0x6b, 0x28, 0x7d, 0xd8, 0x85, 0xd1, 0x57, 0xe7, 0x24, 0x1e, 0xba, 0xf5,
+	0x77, 0x06, 0x73, 0x22, 0xbf, 0xba, 0x88, 0x2f, 0x30, 0xdf, 0x48, 0xc9, 0x3f, 0xaa, 0xa7, 0x8e,
+	0xcc, 0x7b, 0xab, 0xff, 0xf4, 0xbc, 0x6d, 0xce, 0x70, 0x0b, 0x4b, 0xbe, 0x0a, 0x83, 0x56, 0x53,
+	0xe1, 0xe3, 0xa6, 0xea, 0xff, 0xec, 0x84, 0xfb, 0x28, 0xe9, 0x25, 0x1f, 0x7f, 0x02, 0x00, 0x00,
+	0xff, 0xff, 0x57, 0xfa, 0xc1, 0xd3, 0xee, 0x01, 0x00, 0x00,
 }

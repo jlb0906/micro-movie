@@ -12,6 +12,7 @@ require (
 	github.com/micro/go-plugins v1.5.1
 	github.com/micro/go-plugins/config/source/grpc/v2 v2.3.0
 	github.com/micro/go-plugins/logger/zap/v2 v2.3.0
+	github.com/minio/minio-go/v6 v6.0.52
 	github.com/zyxar/argo v0.0.0-20190709183644-6096bc0e6414
 	google.golang.org/grpc v1.26.0
 )
