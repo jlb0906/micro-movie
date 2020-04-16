@@ -2,10 +2,11 @@ package aria2
 
 import (
 	"context"
+	"fmt"
 	"github.com/jlb0906/micro-movie/basic/common"
-	proto "github.com/jlb0906/micro-movie/movie-srv/proto/movie"
-	"github.com/jlb0906/micro-movie/plugins/aria2cfg"
-	"github.com/jlb0906/micro-movie/plugins/miniocfg"
+	pb "github.com/jlb0906/micro-movie/movie-srv/proto/movie"
+	aria2cfg "github.com/jlb0906/micro-movie/plugins/aria2"
+	miniocfg "github.com/jlb0906/micro-movie/plugins/minio"
 	"github.com/micro/go-micro/v2/client"
 	"github.com/micro/go-micro/v2/logger"
 	"github.com/minio/minio-go/v6"
@@ -18,11 +19,12 @@ import (
 
 var (
 	m        sync.RWMutex
-	movieCli proto.MovieSrvService
+	inited   bool
+	movieCli pb.MovieService
 	aria2Cli rpc.Client
 )
 
-func GetAria2(ctx context.Context) rpc.Client {
+func GetAria2() rpc.Client {
 	return aria2Cli
 }
 
@@ -37,8 +39,8 @@ func (MovieNotifier) OnDownloadStart(events []rpc.Event) {
 			continue
 		}
 		arr := strings.Split(stat.Files[0].URIs[0].URI, "/")
-		movieCli.AddMovie(context.TODO(), &proto.AddReq{
-			Movie: &proto.Movie{
+		movieCli.AddMovie(context.TODO(), &pb.AddReq{
+			Movie: &pb.MovieMsg{
 				Id:     e.Gid,
 				Title:  arr[len(arr)-1],
 				Url:    stat.Files[0].URIs[0].URI,
@@ -53,7 +55,7 @@ func (MovieNotifier) OnDownloadStop(events []rpc.Event)  { logger.Infof("%s stop
 func (MovieNotifier) OnDownloadComplete(events []rpc.Event) {
 	logger.Infof("%s completed.", events)
 
-	cli, conf := miniocfg.GetMinio()
+	cli, conf := miniocfg.Get()
 
 	for _, e := range events {
 		stat, err := aria2Cli.TellStatus(e.Gid)
@@ -66,7 +68,7 @@ func (MovieNotifier) OnDownloadComplete(events []rpc.Event) {
 		filePath := stat.Files[0].Path
 		arr := strings.Split(filePath, "/")
 		objectName := arr[len(arr)-1]
-		filePath = filepath.Join(aria2cfg.GetAria2().Prefix, filePath)
+		filePath = filepath.Join(aria2cfg.Get().Prefix, filePath)
 
 		// Upload the file with FPutObject
 		n, err := cli.FPutObject(conf.BucketName, objectName, filePath, minio.PutObjectOptions{})
@@ -82,8 +84,8 @@ func (MovieNotifier) OnDownloadComplete(events []rpc.Event) {
 			return
 		}
 
-		movieCli.UpdateMovie(context.TODO(), &proto.UpdateReq{
-			Movie: &proto.Movie{
+		movieCli.UpdateMovie(context.TODO(), &pb.UpdateReq{
+			Movie: &pb.MovieMsg{
 				Id:     e.Gid,
 				Title:  objectName,
 				Url:    u.String(),
@@ -105,11 +107,13 @@ func Init() {
 	m.Lock()
 	defer m.Unlock()
 
-	if aria2Cli != nil {
+	if inited {
+		logger.Warn(fmt.Sprint("[Init] service 已经初始化过"))
 		return
 	}
 
-	cfg := aria2cfg.GetAria2()
+	cfg := aria2cfg.Get()
 	aria2Cli, _ = rpc.New(context.TODO(), cfg.Uri, cfg.Token, time.Duration(cfg.Timeout)*time.Second, new(MovieNotifier))
-	movieCli = proto.NewMovieSrvService(common.MovieSrv, client.DefaultClient)
+	movieCli = pb.NewMovieService(common.MovieSrv, client.DefaultClient)
+	inited = true
 }

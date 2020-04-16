@@ -1,4 +1,4 @@
-package miniocfg
+package minio
 
 import (
 	"github.com/jlb0906/micro-movie/basic"
@@ -10,13 +10,13 @@ import (
 
 var (
 	m      sync.RWMutex
-	cfg    *MinioConf
+	cfg    *minioConf
 	inited bool
 	cli    *minio.Client
 )
 
 // Minio 配置
-type MinioConf struct {
+type minioConf struct {
 	Endpoint        string `json:"endpoint"`
 	AccessKeyID     string `json:"accessKeyID"`
 	SecretAccessKey string `json:"secretAccessKey"`
@@ -34,23 +34,23 @@ func initMinio() {
 	defer m.Unlock()
 
 	if inited {
-		log.Infof("[initMinio] 已经初始化过Minio...")
+		log.Warn("[initMinio] 已经初始化过Minio...")
 		return
 	}
 
 	log.Infof("[initMinio] 初始化Minio...")
 
 	c := config.C()
-	cfg = new(MinioConf)
+	cfg = new(minioConf)
 	err := c.App("minio", cfg)
 	if err != nil {
-		log.Error("[initMinio] %s", err)
+		log.Fatalf("[initMinio] %s", err)
 	}
 
 	// Initialize minio client object.
 	minioClient, err := minio.New(cfg.Endpoint, cfg.AccessKeyID, cfg.SecretAccessKey, cfg.UseSSL)
 	if err != nil {
-		log.Error(err)
+		log.Fatal(err)
 	}
 
 	err = minioClient.MakeBucket(cfg.BucketName, cfg.Location)
@@ -73,6 +73,6 @@ func initMinio() {
 }
 
 // Minio 获取Minio
-func GetMinio() (*minio.Client, *MinioConf) {
+func Get() (*minio.Client, *minioConf) {
 	return cli, cfg
 }

@@ -7,19 +7,16 @@ import (
 	"github.com/micro/go-micro/v2/logger"
 	"net"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/micro/go-micro/v2/config"
 	"github.com/micro/go-micro/v2/config/source/file"
-	proto "github.com/micro/go-plugins/config/source/grpc/proto"
+	pb "github.com/micro/go-plugins/config/source/grpc/proto"
 	"google.golang.org/grpc"
 )
 
 var (
-	mux        sync.RWMutex
-	configMaps = make(map[string]*proto.ChangeSet)
-	apps       = []string{"micro"}
+	apps = []string{"micro"}
 )
 
 type Service struct{}
@@ -33,7 +30,7 @@ func main() {
 
 	// new service
 	service := grpc.NewServer()
-	proto.RegisterSourceServer(service, new(Service))
+	pb.RegisterSourceServer(service, new(Service))
 	ts, err := net.Listen("tcp", ":8600")
 	if err != nil {
 		logger.Fatal(err)
@@ -46,11 +43,11 @@ func main() {
 	}
 }
 
-func (s Service) Read(ctx context.Context, req *proto.ReadRequest) (rsp *proto.ReadResponse, err error) {
+func (s Service) Read(ctx context.Context, req *pb.ReadRequest) (rsp *pb.ReadResponse, err error) {
 	appName := parsePath(req.Path)
 	switch appName {
 	case "micro":
-		rsp = &proto.ReadResponse{
+		rsp = &pb.ReadResponse{
 			ChangeSet: getConfig(appName),
 		}
 		return
@@ -60,9 +57,9 @@ func (s Service) Read(ctx context.Context, req *proto.ReadRequest) (rsp *proto.R
 	}
 }
 
-func (s Service) Watch(req *proto.WatchRequest, server proto.Source_WatchServer) (err error) {
+func (s Service) Watch(req *pb.WatchRequest, server pb.Source_WatchServer) (err error) {
 	appName := parsePath(req.Path)
-	rsp := &proto.WatchResponse{
+	rsp := &pb.WatchResponse{
 		ChangeSet: getConfig(appName),
 	}
 	if err = server.Send(rsp); err != nil {
@@ -105,11 +102,11 @@ func loadConfigFile() (err error) {
 	return
 }
 
-func getConfig(appName string) *proto.ChangeSet {
+func getConfig(appName string) *pb.ChangeSet {
 	bytes := config.Get(appName).Bytes()
 
 	logger.Infof("[getConfig] appName，%s", appName)
-	return &proto.ChangeSet{
+	return &pb.ChangeSet{
 		Data:      bytes,
 		Checksum:  fmt.Sprintf("%x", md5.Sum(bytes)),
 		Format:    "yml",

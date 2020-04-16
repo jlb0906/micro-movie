@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package go.micro.srv.aria2;
+package aria2;
 
 service Aria2 {
   rpc AddURI(AddURIReq) returns (AddURIRsp) {}
@@ -62,13 +62,17 @@ message StatusInfo {
   string UploadSpeed = 8;
   string InfoHash = 9;
   string NumSeeders = 10;
-  string Connections = 11;
-  string ErrorCode = 12;
-  string ErrorMessage = 13;
-  repeated string FollowedBy = 14;
-  string BelongsTo = 15;
-  string Dir = 16;
-  repeated FileInfo Files = 17;
+  string Seeder = 11;
+  string PieceLength = 12;
+  string NumPieces = 13;
+  string Connections = 14;
+  string ErrorCode = 15;
+  string ErrorMessage = 16;
+  repeated string FollowedBy = 17;
+  string BelongsTo = 18;
+  string Dir = 19;
+  repeated FileInfo Files = 20;
+  BitTorrent BitTorrent = 21;
 }
 
 message FileInfo {
@@ -80,7 +84,21 @@ message FileInfo {
   repeated URIInfo URIs = 6;
 }
 
-message URIInfo  {
+message URIInfo {
   string URI = 1;
   string Status = 2;
+}
+
+message BitTorrent {
+  message AnnounceListArr {
+    repeated string elem = 1;
+  }
+  repeated  AnnounceListArr AnnounceList = 1;
+  string Comment = 2;
+  int64 CreationDate = 3;
+  string Mode = 4;
+  message Info {
+    string  Name = 1;
+  }
+  Info info = 5;
 }

@@ -24,11 +24,8 @@ func initDB() {
 	m.Lock()
 	defer m.Unlock()
 
-	var err error
-
 	if inited {
-		err = fmt.Errorf("[initDB] db 已经初始化过")
-		logger.Error(err.Error())
+		logger.Warn(fmt.Sprint("[initDB] db 已经初始化过"))
 		return
 	}
 
@@ -38,6 +35,6 @@ func initDB() {
 }
 
 // GetDB 获取db
-func GetDB() *gorm.DB {
+func Get() *gorm.DB {
 	return mysqlDB
 }

@@ -6,11 +6,11 @@ import (
 	"github.com/jlb0906/micro-movie/basic/common"
 	"github.com/jlb0906/micro-movie/basic/config"
 	"github.com/jlb0906/micro-movie/movie-srv/handler"
-	proto "github.com/jlb0906/micro-movie/movie-srv/proto/movie"
+	pb "github.com/jlb0906/micro-movie/movie-srv/proto/movie"
 	"github.com/jlb0906/micro-movie/movie-srv/service"
 	"github.com/micro/cli/v2"
 	"github.com/micro/go-micro/v2"
-	log "github.com/micro/go-micro/v2/logger"
+	"github.com/micro/go-micro/v2/logger"
 	"github.com/micro/go-micro/v2/registry"
 	"github.com/micro/go-micro/v2/registry/etcd"
 	"github.com/micro/go-plugins/config/source/grpc/v2"
@@ -27,7 +27,7 @@ type movieCfg struct {
 }
 
 func main() {
-	log.DefaultLogger, _ = microzap.NewLogger()
+	logger.DefaultLogger, _ = microzap.NewLogger()
 
 	// 初始化配置、数据库等信息
 	initCfg()
@@ -54,11 +54,11 @@ func main() {
 	)
 
 	// Register Handler
-	proto.RegisterMovieSrvHandler(srv.Server(), new(handler.Movie))
+	pb.RegisterMovieHandler(srv.Server(), new(handler.Movie))
 
 	// Run service
 	if err := srv.Run(); err != nil {
-		log.Fatal(err)
+		logger.Fatal(err)
 	}
 }
 
@@ -87,5 +87,5 @@ func initCfg() {
 		panic(err)
 	}
 
-	log.Infof("[initCfg] 配置 %+v", cfg)
+	logger.Infof("[initCfg] 配置 %+v", cfg)
 }

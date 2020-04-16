@@ -2,27 +2,33 @@ package handler
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
-	aria2 "github.com/jlb0906/micro-movie/aria2-srv/proto/aria2"
-	aria22 "github.com/jlb0906/micro-movie/aria2-srv/service/aria2"
+	pb "github.com/jlb0906/micro-movie/aria2-srv/proto/aria2"
+	aria2srv "github.com/jlb0906/micro-movie/aria2-srv/service/aria2"
 	"github.com/jlb0906/micro-movie/basic/common"
 	"github.com/micro/go-micro/v2/errors"
 	"github.com/micro/go-micro/v2/logger"
 	"github.com/zyxar/argo/rpc"
+	"sync"
 )
 
-var aria2Cli rpc.Client
+var (
+	m        sync.RWMutex
+	inited   bool
+	aria2Cli rpc.Client
+)
 
 type Aria2 struct{}
 
-func (e *Aria2) AddURI(ctx context.Context, req *aria2.AddURIReq, rsp *aria2.AddURIRsp) error {
+func (e *Aria2) AddURI(ctx context.Context, req *pb.AddURIReq, rsp *pb.AddURIRsp) error {
 	logger.Info("Received Aria2.AddURI request")
 
 	gid, err := aria2Cli.AddURI(req.Uri)
 	if err != nil {
 		logger.Error(err)
 		msg := fmt.Sprintf("错误的请求 %v", err)
-		rsp.Err = &aria2.Error{
+		rsp.Err = &pb.Error{
 			Code:   400,
 			Detail: msg,
 		}
@@ -34,14 +40,14 @@ func (e *Aria2) AddURI(ctx context.Context, req *aria2.AddURIReq, rsp *aria2.Add
 	return nil
 }
 
-func (e *Aria2) Remove(ctx context.Context, req *aria2.RemoveReq, rsp *aria2.RemoveRsp) error {
+func (e *Aria2) Remove(ctx context.Context, req *pb.RemoveReq, rsp *pb.RemoveRsp) error {
 	logger.Info("Received Aria2.Remove request")
 
 	gid, err := aria2Cli.Remove(req.Gid)
 	if err != nil {
 		logger.Error(err)
 		msg := fmt.Sprintf("错误的请求 %v", err)
-		rsp.Err = &aria2.Error{
+		rsp.Err = &pb.Error{
 			Code:   400,
 			Detail: msg,
 		}
@@ -53,14 +59,14 @@ func (e *Aria2) Remove(ctx context.Context, req *aria2.RemoveReq, rsp *aria2.Rem
 	return nil
 }
 
-func (e *Aria2) Pause(ctx context.Context, req *aria2.PauseReq, rsp *aria2.PauseRsp) error {
+func (e *Aria2) Pause(ctx context.Context, req *pb.PauseReq, rsp *pb.PauseRsp) error {
 	logger.Info("Received Aria2.Pause request")
 
 	gid, err := aria2Cli.Pause(req.Gid)
 	if err != nil {
 		logger.Error(err)
 		msg := fmt.Sprintf("错误的请求 %v", err)
-		rsp.Err = &aria2.Error{
+		rsp.Err = &pb.Error{
 			Code:   400,
 			Detail: msg,
 		}
@@ -72,14 +78,14 @@ func (e *Aria2) Pause(ctx context.Context, req *aria2.PauseReq, rsp *aria2.Pause
 	return nil
 }
 
-func (e *Aria2) TellStatus(ctx context.Context, req *aria2.TellStatusReq, rsp *aria2.TellStatusRsp) error {
+func (e *Aria2) TellStatus(ctx context.Context, req *pb.TellStatusReq, rsp *pb.TellStatusRsp) error {
 	logger.Info("Received Aria2.TellStatus request")
 
 	info, err := aria2Cli.TellStatus(req.Gid, req.Keys...)
 	if err != nil {
 		logger.Error(err)
 		msg := fmt.Sprintf("错误的请求 %v", err)
-		rsp.Err = &aria2.Error{
+		rsp.Err = &pb.Error{
 			Code:   400,
 			Detail: msg,
 		}
@@ -87,50 +93,24 @@ func (e *Aria2) TellStatus(ctx context.Context, req *aria2.TellStatusReq, rsp *a
 	}
 	logger.Infof("下载任务的状态：%v", info)
 
-	rsp.Info = &aria2.StatusInfo{
-		Gid:             info.Gid,
-		Status:          info.Status,
-		TotalLength:     info.TotalLength,
-		CompletedLength: info.CompletedLength,
-		UploadLength:    info.UploadLength,
-		BitField:        info.BitField,
-		DownloadSpeed:   info.DownloadSpeed,
-		UploadSpeed:     info.UploadSpeed,
-		InfoHash:        info.InfoHash,
-		NumSeeders:      info.NumSeeders,
-		Connections:     info.Connections,
-		ErrorCode:       info.ErrorCode,
-		ErrorMessage:    info.ErrorMessage,
-		FollowedBy:      info.FollowedBy,
-		BelongsTo:       info.BelongsTo,
-		Dir:             info.Dir,
-		Files:           toProto(info.Files),
+	data, _ := json.Marshal(info)
+	rsp.Info = &pb.StatusInfo{}
+	err = json.Unmarshal(data, rsp.Info)
+	if err != nil {
+		logger.Error(err)
 	}
 	return nil
 }
 
-func toProto(files []rpc.FileInfo) []*aria2.FileInfo {
-	infos := make([]*aria2.FileInfo, 0)
-	for _, f := range files {
-		uriInfos := make([]*aria2.URIInfo, 0)
-		for _, u := range f.URIs {
-			uriInfos = append(uriInfos, &aria2.URIInfo{
-				URI:    u.URI,
-				Status: u.Status,
-			})
-		}
-		infos = append(infos, &aria2.FileInfo{
-			Index:           f.Index,
-			Path:            f.Path,
-			Length:          f.Length,
-			CompletedLength: f.CompletedLength,
-			Selected:        f.Selected,
-			URIs:            uriInfos,
-		})
-	}
-	return infos
-}
-
 func Init() {
-	aria2Cli = aria22.GetAria2(context.TODO())
+	m.Lock()
+	defer m.Unlock()
+
+	if inited {
+		logger.Warn(fmt.Sprint("[Init] handler 已经初始化过"))
+		return
+	}
+
+	aria2Cli = aria2srv.GetAria2()
+	inited = true
 }

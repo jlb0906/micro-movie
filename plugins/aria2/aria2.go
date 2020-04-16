@@ -1,4 +1,4 @@
-package aria2cfg
+package aria2
 
 import (
 	"github.com/jlb0906/micro-movie/basic"
@@ -8,20 +8,20 @@ import (
 )
 
 var (
-	cfg    *Aria2
+	c      *Conf
 	m      sync.RWMutex
 	inited bool
 )
 
-// Aria2 Aria2 配置
-type Aria2 struct {
+// 配置
+type Conf struct {
 	Uri     string `json:"uri"`
 	Token   string `json:"token"`
 	Timeout int    `json:"timeout"`
 	Prefix  string `json:"prefix"`
 }
 
-// init 初始化
+// 初始化
 func init() {
 	basic.Register(initAria2)
 }
@@ -31,24 +31,23 @@ func initAria2() {
 	defer m.Unlock()
 
 	if inited {
-		logger.Infof("[initAria2] 已经初始化过Aria2...")
+		logger.Warn("[initAria2] 已经初始化过Aria2...")
 		return
 	}
 
 	logger.Infof("[initAria2] 初始化Aria2...")
 
-	c := config.C()
-	cfg = new(Aria2)
-	err := c.Path("aria2", cfg)
+	src := config.C()
+	c = new(Conf)
+	err := src.Path("aria2", c)
 	if err != nil {
-		logger.Error("[initAria2] %s", err)
+		logger.Fatal("[initAria2] %s", err)
 	}
 
 	inited = true
-	logger.Infof("[initAria2] Arias，成功")
+	logger.Infof("[initAria2] 成功")
 }
 
-// Aria2 获取aria2
-func GetAria2() *Aria2 {
-	return cfg
+func Get() *Conf {
+	return c
 }

@@ -53,7 +53,7 @@ func initRedis() {
 	defer m.Unlock()
 
 	if inited {
-		logger.Infof("[initRedis] 已经初始化过Redis...")
+		logger.Warn("[initRedis] 已经初始化过Redis...")
 		return
 	}
 

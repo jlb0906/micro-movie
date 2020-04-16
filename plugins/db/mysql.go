@@ -8,11 +8,11 @@ import (
 )
 
 type db struct {
-	Mysql Mysql `json："mysql"`
+	Mysql mysqlConf `json:"mysql"`
 }
 
-// Mysql mySQL 配置
-type Mysql struct {
+// Mysql 配置
+type mysqlConf struct {
 	URL    string `json:"url"`
 	Enable bool   `json:"enabled"`
 }
@@ -25,7 +25,7 @@ func initMysql() {
 
 	err := c.App("db", cfg)
 	if err != nil {
-		logger.Infof("[initMysql] %s", err)
+		logger.Fatalf("[initMysql] %s", err)
 	}
 	logger.Infof("mysql配置信息: %+v", cfg)
 
@@ -36,13 +36,12 @@ func initMysql() {
 
 	// 创建连接
 	mysqlDB, err = gorm.Open("mysql", cfg.Mysql.URL)
-	if mysqlDB != nil {
-		mysqlDB.SingularTable(true)
-	}
-
 	if err != nil {
 		logger.Fatal(err)
-		panic(err)
+	}
+
+	if mysqlDB != nil {
+		mysqlDB.SingularTable(true)
 	}
 
 	logger.Infof("[initMysql] Mysql 连接成功")
