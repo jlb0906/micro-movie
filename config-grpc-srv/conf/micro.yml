@@ -26,18 +26,23 @@ micro:
     location: cn-north-1
 
   aria2_srv:
-    name: go.micro.srv.aria2
+    name: go.micro.service.aria2
     version: latest
     aria2:
       uri: http://192.168.1.105:6800/jsonrpc
       token: "123456"
       timeout: 1
       prefix: /root
+      workerCount: 3
 
   aria2_web:
-    name: go.micro.web.aria2
+    name: go.micro.api.aria2
     version: latest
 
   movie_srv:
-    name: go.micro.srv.movie
+    name: go.micro.service.movie
+    version: latest
+
+  movie_web:
+    name: go.micro.api.movie
     version: latest

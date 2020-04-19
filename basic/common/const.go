@@ -8,6 +8,6 @@ const (
 )
 
 const (
-	Aria2Srv = "go.micro.srv.aria2"
-	MovieSrv = "go.micro.srv.movie"
+	Aria2Srv = "go.micro.service.aria2"
+	MovieSrv = "go.micro.service.movie"
 )

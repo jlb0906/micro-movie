@@ -3,9 +3,11 @@ package handler
 import (
 	"context"
 	"fmt"
+	aria2pb "github.com/jlb0906/micro-movie/aria2-srv/proto/aria2"
 	"github.com/jlb0906/micro-movie/basic/common"
 	pb "github.com/jlb0906/micro-movie/movie-srv/proto/movie"
 	"github.com/jlb0906/micro-movie/movie-srv/service/movie"
+	"github.com/micro/go-micro/v2/client"
 	"github.com/micro/go-micro/v2/errors"
 	"github.com/micro/go-micro/v2/logger"
 	"sync"
@@ -15,6 +17,7 @@ var (
 	m            sync.RWMutex
 	inited       bool
 	movieService movie.Service
+	aria2Srv     aria2pb.Aria2Service
 )
 
 type Orders struct {
@@ -31,6 +34,7 @@ func Init() {
 	}
 
 	movieService, _ = movie.GetService()
+	aria2Srv = aria2pb.NewAria2Service(common.Aria2Srv, client.DefaultClient)
 	inited = true
 }
 
@@ -47,6 +51,12 @@ func (e *Movie) UpdateMovie(ctx context.Context, req *pb.UpdateReq, rsp *pb.Upda
 	return nil
 }
 
+func (e *Movie) UpdateMovieByGid(ctx context.Context, req *pb.UpdateReq, rsp *pb.UpdateRsp) error {
+	movieService.UpdateMovieByGid(req.Movie)
+	rsp.Msg = "succeed"
+	return nil
+}
+
 func (e *Movie) AddMovie(ctx context.Context, req *pb.AddReq, resp *pb.AddRsp) error {
 	_, err := movieService.AddMovie(req.Movie)
 	if err != nil {
@@ -55,6 +65,7 @@ func (e *Movie) AddMovie(ctx context.Context, req *pb.AddReq, resp *pb.AddRsp) e
 		return errors.InternalServerError(common.MovieSrv, "内部错误")
 	}
 
+	aria2Srv.AddURI(ctx, &aria2pb.AddURIReq{Uri: req.Movie.Uri})
 	resp.Msg = "succeed"
 	return nil
 }

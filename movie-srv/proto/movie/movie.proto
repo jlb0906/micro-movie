@@ -5,14 +5,16 @@ package movie;
 service Movie {
   rpc AddMovie(AddReq) returns (AddRsp) {}
   rpc UpdateMovie(UpdateReq) returns (UpdateRsp) {}
+  rpc UpdateMovieByGid(UpdateReq) returns (UpdateRsp) {}
   rpc SelectAll(Empty) returns (SelectRsp) {}
 }
 
 message MovieMsg {
   string id = 1;
   string title = 2;
-  string url = 3;
+  string uri = 3;
   string status = 4;
+  string gid = 5;
 }
 
 message AddReq {

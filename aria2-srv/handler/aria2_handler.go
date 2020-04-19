@@ -7,6 +7,8 @@ import (
 	pb "github.com/jlb0906/micro-movie/aria2-srv/proto/aria2"
 	aria2srv "github.com/jlb0906/micro-movie/aria2-srv/service/aria2"
 	"github.com/jlb0906/micro-movie/basic/common"
+	"github.com/jlb0906/micro-movie/movie-srv/proto/movie"
+	"github.com/micro/go-micro/v2/client"
 	"github.com/micro/go-micro/v2/errors"
 	"github.com/micro/go-micro/v2/logger"
 	"github.com/zyxar/argo/rpc"
@@ -17,6 +19,7 @@ var (
 	m        sync.RWMutex
 	inited   bool
 	aria2Cli rpc.Client
+	movieSrv movie.MovieService
 )
 
 type Aria2 struct{}
@@ -112,5 +115,6 @@ func Init() {
 	}
 
 	aria2Cli = aria2srv.GetAria2()
+	movie.NewMovieService(common.MovieSrv, client.DefaultClient)
 	inited = true
 }

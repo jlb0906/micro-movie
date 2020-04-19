@@ -911,9 +911,7 @@ func init() {
 	proto.RegisterType((*BitTorrent_Info)(nil), "aria2.BitTorrent.Info")
 }
 
-func init() {
-	proto.RegisterFile("aria2-srv/proto/aria2/aria2.proto", fileDescriptor_a3a1f0900da2471c)
-}
+func init() { proto.RegisterFile("aria2-srv/proto/aria2/aria2.proto", fileDescriptor_a3a1f0900da2471c) }
 
 var fileDescriptor_a3a1f0900da2471c = []byte{
 	// 819 bytes of a gzipped FileDescriptorProto

@@ -15,10 +15,11 @@ var (
 
 // 配置
 type Conf struct {
-	Uri     string `json:"uri"`
-	Token   string `json:"token"`
-	Timeout int    `json:"timeout"`
-	Prefix  string `json:"prefix"`
+	Uri         string `json:"uri"`
+	Token       string `json:"token"`
+	Timeout     int    `json:"timeout"`
+	Prefix      string `json:"prefix"`
+	WorkerCount int    `json:"workerCount"`
 }
 
 // 初始化
